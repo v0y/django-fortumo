@@ -2,9 +2,11 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'django_fortumo.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+    url(
+        r'^payment_processor$',
+        'fortumo.views.payment_processor',
+        name='payment_processor',
+    ),
 
     url(r'^admin/', include(admin.site.urls)),
 ]
