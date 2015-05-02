@@ -11,12 +11,18 @@ ALLOWED_HOSTS = []
 ###############################################################################
 
 INSTALLED_APPS = (
+    # core
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # third party
+    'django_nose',
+
+    # internal
     'fortumo',
 )
 
@@ -85,6 +91,13 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+
+###############################################################################
+# Third party
+###############################################################################
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 
 ###############################################################################
