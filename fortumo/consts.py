@@ -7,3 +7,8 @@ class Status(object):
 class Test(object):
     OK = 'ok'
     FALSE = 'false'
+
+
+class BillingType(object):
+    MO = 'MO'
+    MT = 'MT'
