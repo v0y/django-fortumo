@@ -115,3 +115,4 @@ FORTUMO_IPS = [
     '79.125.5.205',
     '79.125.5.95',
 ]
+FORTUMO_SECRET = 'bad54c617b3a51230ac7cc3da398855e'  # test secret
