@@ -1,4 +1,5 @@
 import hashlib
+from random import randint
 
 from django.conf import settings
 
@@ -24,3 +25,11 @@ def calculate_signature(data):
 def signature_is_valid(data):
     signature = data['sig']
     return calculate_signature(data) == signature
+
+
+def generate_pin():
+    pin = '{}-{}'.format(
+        str(randint(0, 999)).zfill(3),
+        str(randint(0, 999)).zfill(3),
+    )
+    return pin

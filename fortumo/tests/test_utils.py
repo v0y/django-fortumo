@@ -1,5 +1,6 @@
 from fortumo.utils import (
     calculate_signature,
+    generate_pin,
     signature_is_valid,
 )
 
@@ -38,3 +39,14 @@ def test_invalid_signature_is_invalid():
         'sig': '047f555536f8826825c9079265ad36de',
     }
     assert signature_is_valid(data) is False
+
+
+def test_generate_pin():
+    pin = generate_pin()
+    part1, part2 = pin.split('-')
+    assert type(pin) == str
+    assert len(pin) == 7
+    assert len(part1) == 3
+    assert len(part2) == 3
+    assert 0 <= int(part1) <= 999
+    assert 0 <= int(part2) <= 999
