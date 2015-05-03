@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import (
     Client,
@@ -42,9 +43,15 @@ class PaymentProcessorTestCase(TestCase):
         self.assertEqual(Payment.objects.count(), 1)
 
     def test_unsuccessful_payment_process_invalid_signature(self):
-        invalid_data = self.valid_data.copy()
-        invalid_data['sig'] = '666'
-        response = self.client.get(self.url, invalid_data)
+        self.valid_data['sig'] = '666'
+        response = self.client.get(self.url, self.valid_data)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Message.objects.count(), 0)
+        self.assertEqual(Payment.objects.count(), 0)
+
+    def test_unsuccessful_payment_process_invalid_ip(self):
+        settings.FORTUMO_IPS = []
+        response = self.client.get(self.url, self.valid_data)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Message.objects.count(), 0)
         self.assertEqual(Payment.objects.count(), 0)
