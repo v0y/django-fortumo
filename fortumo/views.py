@@ -8,7 +8,7 @@ from fortumo.models import (
     Service,
 )
 from fortumo.utils import (
-    generate_pin,
+    generate_unique_pin,
     signature_is_valid,
 )
 
@@ -41,7 +41,7 @@ def payment_processor(request):
         sig=request.GET['sig'],
     )
 
-    pin = generate_pin()
+    pin = generate_unique_pin(request.GET['service_id'])
 
     Payment.objects.create(
         service=Service.objects.get(service_id=request.GET['service_id']),
