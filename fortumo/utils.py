@@ -18,4 +18,4 @@ def calculate_signature(data):
         settings.FORTUMO_SECRET,
     )
 
-    return hashlib.md5(calculation_string).hexdigest()
+    return hashlib.md5(calculation_string.encode('utf-8')).hexdigest()
