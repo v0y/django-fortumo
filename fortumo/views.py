@@ -2,8 +2,15 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.http.response import HttpResponseForbidden
 
-from fortumo.models import Message
-from fortumo.utils import signature_is_valid
+from fortumo.models import (
+    Message,
+    Payment,
+    Service,
+)
+from fortumo.utils import (
+    generate_pin,
+    signature_is_valid,
+)
 
 
 def payment_processor(request):
@@ -16,7 +23,7 @@ def payment_processor(request):
     if not signature_is_valid(request.GET):
         return HttpResponseForbidden('403')
 
-    Message.objects.create(
+    message = Message.objects.create(
         message=request.GET['message'],
         sender=request.GET['sender'],
         country=request.GET['country'],
@@ -32,6 +39,14 @@ def payment_processor(request):
         status=request.GET['status'],
         test=request.GET['test'],
         sig=request.GET['sig'],
+    )
+
+    pin = generate_pin()
+
+    Payment.objects.create(
+        service=Service.objects.get(service_id=request.GET['service_id']),
+        message=message,
+        pin=pin,
     )
 
     return HttpResponse('dummy')
