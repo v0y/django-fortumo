@@ -1,6 +1,12 @@
 from django.db import models
 
 
+class Service(models.Model):
+    name = models.CharField(max_length=64)
+    secret = models.CharField(max_length=128)
+    service_id = models.CharField(max_length=128)
+
+
 class Message(models.Model):
     message = models.CharField(max_length=64)
     sender = models.CharField(max_length=64, db_index=True)
@@ -17,3 +23,10 @@ class Message(models.Model):
     status = models.CharField(max_length=64)
     test = models.CharField(max_length=16)
     sig = models.CharField(max_length=128)
+
+
+class Payment(models.Model):
+    service = models.ForeignKey(Service, related_name='payments')
+    message = models.OneToOneField(Message)
+    pin = models.CharField(max_length=16, unique=True)
+    used = models.BooleanField(default=False)
