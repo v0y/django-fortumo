@@ -19,3 +19,8 @@ def calculate_signature(data):
     )
 
     return hashlib.md5(calculation_string.encode('utf-8')).hexdigest()
+
+
+def signature_is_valid(data):
+    signature = data['sig']
+    return calculate_signature(data) == signature
