@@ -1,8 +1,11 @@
 import os
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '0_6iq7a%wez2ibbrt07#g&hj1v#pnt9)!^0t)sk3vy72)p%87@'
+BASE_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    '..',
+)
+
 DEBUG = True
 ALLOWED_HOSTS = []
 
@@ -89,7 +92,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
+    os.path.join(BASE_DIR, 'templates'),
 )
 
 
@@ -115,4 +118,3 @@ FORTUMO_IPS = [
     '79.125.5.205',
     '79.125.5.95',
 ]
-FORTUMO_SECRET = 'bad54c617b3a51230ac7cc3da398855e'  # test secret
