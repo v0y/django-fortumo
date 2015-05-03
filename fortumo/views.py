@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.http.response import HttpResponseForbidden
 
 from fortumo.models import Message
+from fortumo.utils import signature_is_valid
 
 
 def payment_processor(request):
@@ -12,7 +13,8 @@ def payment_processor(request):
     ):
         return HttpResponseForbidden('403')
 
-    # TODO: check signature
+    if not signature_is_valid(request.GET):
+        return HttpResponseForbidden('403')
 
     Message.objects.create(
         message=request.GET['message'],

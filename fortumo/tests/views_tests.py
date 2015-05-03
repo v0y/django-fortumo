@@ -1,18 +1,18 @@
-from unittest import TestCase
-
 from django.core.urlresolvers import reverse
-from django.test import Client
+from django.test import (
+    Client,
+    TestCase,
+)
 
 from fortumo import consts
 from fortumo.models import Message
 
 
 class PaymentProcessorTestCase(TestCase):
-
-    def test_successful_process(self):
-        client = Client()
-        url = reverse('payment_processor')
-        get_data = {
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('payment_processor')
+        self.valid_data = {
             'message': '123',
             'sender': '358401234567',
             'country': 'SE',
@@ -27,11 +27,20 @@ class PaymentProcessorTestCase(TestCase):
             'billing_type': consts.BillingType.MO,
             'status': consts.Status.OK,
             'test': consts.Test.FALSE,
-            'sig': '2d7b58632d855bf031af5066761f25cd',
+            'sig': '8d5714783f9cb60aa5798f892bbf3baf',
         }
-        response = client.get(url, get_data)
+
+    def test_successful_payment_process(self):
+        response = self.client.get(self.url, self.valid_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b'dummy')
 
         message = Message.objects.get()
-        self.assertEqual(message.sig, '2d7b58632d855bf031af5066761f25cd')
+        self.assertEqual(message.sig, '8d5714783f9cb60aa5798f892bbf3baf')
+
+    def test_unsuccessful_payment_process_invalid_signature(self):
+        invalid_data = self.valid_data.copy()
+        invalid_data['sig'] = '666'
+        response = self.client.get(self.url, invalid_data)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Message.objects.count(), 0)
