@@ -7,6 +7,11 @@ urlpatterns = [
         'fortumo.views.payment_processor',
         name='payment_processor',
     ),
+    url(
+        r'^check_pin$',
+        'fortumo.views.check_pin',
+        name='check_pin',
+    ),
 
     url(r'^admin/', include(admin.site.urls)),
 ]

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.http.response import HttpResponseForbidden
 
+from fortumo import consts
 from fortumo.models import (
     Message,
     Payment,
@@ -18,10 +19,10 @@ def payment_processor(request):
             settings.FORTUMO_ENABLE_IP_VALIDATION and
             not request.META['REMOTE_ADDR'] in settings.FORTUMO_IPS
     ):
-        return HttpResponseForbidden('403')
+        return HttpResponseForbidden()
 
     if not signature_is_valid(request.GET):
-        return HttpResponseForbidden('403')
+        return HttpResponseForbidden()
 
     message = Message.objects.create(
         message=request.GET['message'],
@@ -50,3 +51,25 @@ def payment_processor(request):
     )
 
     return HttpResponse('dummy')
+
+
+def check_pin(request):
+    # TODO: add ip validation
+    try:
+        service = Service.objects.get(secret=request.POST.get('secret'))
+    except Service.DoesNotExist:
+        return HttpResponseForbidden()
+
+    try:
+        payment = Payment.objects.get(
+            service=service,
+            pin=request.POST.get('pin'),
+        )
+    except Payment.DoesNotExist:
+        return HttpResponse(consts.PinResponse.INVALID)
+
+    payment.used = True
+    payment.save()
+
+    return HttpResponse(consts.PinResponse.VALID)
+

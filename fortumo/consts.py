@@ -12,3 +12,8 @@ class Test(object):
 class BillingType(object):
     MO = 'MO'
     MT = 'MT'
+
+
+class PinResponse(object):
+    VALID = 'ok'
+    INVALID = 'invalid'
