@@ -38,6 +38,7 @@ class BaseViewTestCase(TestCase):
         self.service = Service.objects.create(
             service_id='f7fa12b381d290e268f99e382578d64a',
             secret='123',
+            validate_ip=False,
         )
 
 
@@ -124,3 +125,48 @@ class CheckPinTestCase(BaseViewTestCase):
         self.assertEqual(response.status_code, 403)
         payment = Payment.objects.get()
         self.assertFalse(payment.used)
+
+
+class CheckPinIpValidationTestCase(BaseViewTestCase):
+
+    def setUp(self):
+        super(CheckPinIpValidationTestCase, self).setUp()
+        self.url = reverse('check_pin')
+
+    def test_check_pin_with_invalid_ip(self):
+        service = Service.objects.create(
+            service_id='100',
+            secret='200',
+            ips=['256.256.256.256'],
+            validate_ip=True,
+        )
+        message = Message.objects.create(**self.valid_data)
+        Payment.objects.create(
+            service=service,
+            message=message,
+            pin='111-111',
+        )
+        post_data = {'secret': '200', 'pin': '111-111'}
+        response = self.client.post(self.url, post_data)
+        self.assertEqual(response.status_code, 403)
+        payment = Payment.objects.get()
+        self.assertFalse(payment.used)
+
+    def test_check_pin_with_valid_ip(self):
+        service = Service.objects.create(
+            service_id='100',
+            secret='200',
+            ips=['127.0.0.1'],
+            validate_ip=True,
+        )
+        message = Message.objects.create(**self.valid_data)
+        Payment.objects.create(
+            service=service,
+            message=message,
+            pin='555-666',
+        )
+        post_data = {'secret': '200', 'pin': '555-666'}
+        response = self.client.post(self.url, post_data)
+        self.assertEqual(response.status_code, 200)
+        payment = Payment.objects.get(pin='555-666')
+        self.assertTrue(payment.used)

@@ -54,10 +54,12 @@ def payment_processor(request):
 
 
 def check_pin(request):
-    # TODO: add ip validation
     try:
         service = Service.objects.get(secret=request.POST.get('secret'))
     except Service.DoesNotExist:
+        return HttpResponseForbidden()
+
+    if service.validate_ip and request.META['REMOTE_ADDR'] not in service.ips:
         return HttpResponseForbidden()
 
     try:
