@@ -24,6 +24,7 @@ INSTALLED_APPS = (
 
     # third party
     'django_nose',
+    'json_field',
 
     # internal
     'fortumo',
