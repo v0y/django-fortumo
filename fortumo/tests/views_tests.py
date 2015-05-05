@@ -4,6 +4,7 @@ from django.test import (
     Client,
     TestCase,
 )
+from mock import patch
 
 from fortumo import consts
 from fortumo.models import (
@@ -46,10 +47,14 @@ class PaymentProcessorTestCase(BaseViewTestCase):
         super(PaymentProcessorTestCase, self).setUp()
         self.url = reverse('payment_processor')
 
+    def _mock_generate_pin(*args, **kwargs):
+        return '111-111'
+
+    @patch('fortumo.utils.generate_pin', _mock_generate_pin)
     def test_successful_payment_process(self):
         response = self.client.get(self.url, self.valid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'dummy')
+        self.assertEqual(response.content, b'111-111')
         self.assertEqual(Message.objects.count(), 1)
         self.assertEqual(Payment.objects.count(), 1)
 

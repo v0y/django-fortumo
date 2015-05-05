@@ -50,7 +50,7 @@ def payment_processor(request):
         pin=pin,
     )
 
-    return HttpResponse('dummy')
+    return HttpResponse(pin)
 
 
 def check_pin(request):
