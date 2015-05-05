@@ -1,10 +1,13 @@
 from django.db import models
+from json_field import JSONField
 
 
 class Service(models.Model):
     name = models.CharField(max_length=64)
     secret = models.CharField(max_length=128)
     service_id = models.CharField(max_length=128)
+    ips = JSONField(default=[])
+    validate_ip = models.BooleanField(default=True)
 
 
 class Message(models.Model):
