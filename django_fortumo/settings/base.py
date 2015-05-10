@@ -7,7 +7,12 @@ BASE_DIR = os.path.join(
 )
 
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'lh',
+    'localhost',
+    '127.0.0.1',
+    '188.226.222.101',  # applejack
+]
 
 ###############################################################################
 # Application definition
