@@ -9,6 +9,9 @@ class Service(models.Model):
     ips = JSONField(default=[])
     validate_ip = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Message(models.Model):
     message = models.CharField(max_length=64)
@@ -27,9 +30,20 @@ class Message(models.Model):
     test = models.CharField(max_length=16)
     sig = models.CharField(max_length=128)
 
+    def __str__(self):
+        return '{} - {} from {} on {}'.format(
+            self.keyword,
+            self.message,
+            self.sender,
+            self.shortcode,
+        )
+
 
 class Payment(models.Model):
     service = models.ForeignKey(Service, related_name='payments')
     message = models.OneToOneField(Message)
     pin = models.CharField(max_length=16, unique=True)
     used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} - {}'.format(self.id, self.pin)
